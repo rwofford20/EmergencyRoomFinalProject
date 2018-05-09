@@ -37,7 +37,7 @@ private:
     }
     
 public:
-    Patient(int clock) : priority(-1), name(""), patient_visits(-1), arrival_time(clock), start_treatment_time(-1), treatment_time(-1) {}
+    Patient(int clock, int priority_level, std::string name) : priority(-1), name(""), patient_visits(-1), arrival_time(clock), start_treatment_time(-1), treatment_time(-1) {}
 
     std::string name;
     int patient_visits;

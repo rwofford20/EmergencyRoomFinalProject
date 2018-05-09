@@ -12,5 +12,10 @@
 Simulator emergencyroom;
 
 int main(){
+    
+    emergencyroom.data_entry();
+    emergencyroom.run_simulation();
+    emergencyroom.display_menu();
+    
     return 0;
 }

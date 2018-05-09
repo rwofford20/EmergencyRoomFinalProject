@@ -14,12 +14,15 @@
 #include <stdexcept>
 #include <limits>
 #include <ios>
+#include <iomanip>
 #include <vector>
 #include "WaitingRoom.h"
 #include "EmergencyRoom.h"
 #include "Discharge.h"
 #include "Patient.h"
 #include "Caregiver.h"
+#include "Doctor.h"
+#include "Nurse.h"
 #include "Random.h"
 
 using std::queue;
@@ -40,8 +43,10 @@ private:
     std::vector<EmergencyRoom *> doctors;
     //Create a Discharge queue
     Discharge *discharge_queue;
-    
-    //std::vector <std::string> patients;
+    //Create a Doctor queue
+    Doctor *doctor_queue;
+    //Create a Nurse queue
+    Nurse *nurse_queue;
     
     int read_int(const std::string &prompt, int low, int high){
         if (low >= high) // invalid range
@@ -90,34 +95,26 @@ public:
         
         //Prompt user to input number of doctors and accept input
         num_doctors = read_int("Please enter the number of doctors: ", 1, 500);
+        the_doctor_queue = new doctor_queue(num_doctors);
         //Prompt user to input number of nurses and accept input
         num_nurses = read_int("Please enter the number of nurses: ", 1, 500);
-        
-        //Create a new WaitingRoom object and add it the nurses vector
-        for (int i=0; i < num_nurses; i++){
-            
-            nurses.push_back(new EmergencyRoom());
-        }
-        
-        //Create a new WaitingRoom object and add it to the doctors vectors
-        for (int i=0; i < num_doctors; i++){
-            doctors.push_back(new EmergencyRoom());
-        }
-        
+        the_nurse_queue = new nurse_doctor(num_nurses);
     }
     
     void run_simulation(){
+        
+        the_doctor_queue->set_waiting_room_queue(waiting_room_queue);
+        the_nurse_queue->set_waiting_room_queue(waiting_room_queue);
+        
         //Run the simulation
         for (clock = 0; clock < total_time; ++clock){
             //For each clock tick...
+            //Update Waiting Room functions
             waiting_room_queue->update(clock);
-            // loop through each gate and use the update function
-            for (int i = 0; i < num_nurses; i++){
-                nurses[i]->update_nurses(clock);
-            }
-            for (int i = 0; i < num_doctors; i++){
-                doctors[i]->update_doctors(clock);
-            }
+            //Update Doctor and Nurse functions
+            the_doctor_queue->update(clock);
+            the_nurse_queue->update(clock);
+            //Update Discharge functions
             discharge_queue->update(clock);
         }
     }

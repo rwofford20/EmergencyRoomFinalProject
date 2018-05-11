@@ -25,9 +25,9 @@ public:
         srand(seed);
     }
     
-    //Return a random integer in the range of 0 - n
+    //Return a random integer in the range of 1 - n+1
     int next_int(int n){
-        return int(next_double() *n);
+        return int((next_double() *n) + 1);
     }
     
     //Return a random double in the rand of 0-1

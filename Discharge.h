@@ -15,7 +15,7 @@
 class Discharge{
 private:
     //Queue of Patients in the Discharge queue
-    std::queue<Patient *> the_queue;
+    std::queue<Patient *> discharge_queue;
     //Total accumulated wait time in the Emergency Room
     int total_wait_time;
     //Total number of patients served in the Emergency Room
@@ -35,12 +35,12 @@ public:
     void update(int clock)
     {
         //Check if there are Patients in the Discharge queue
-        if (!the_queue.empty()) {
+        if (!discharge_queue.empty()) {
             //Identify the Patient at the front of the queue
-            Patient *patient = the_queue.front();
+            Patient *patient = discharge_queue.front();
             
             //Remove the Patient from the Discharge queue
-            the_queue.pop();
+            discharge_queue.pop();
             
             //Calculate the total time of this Patient's visit
             int patient_wait = clock - patient->arrival_time;

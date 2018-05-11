@@ -9,47 +9,51 @@
 #ifndef Doctor_h
 #define Doctor_h
 
-class Doctor{
+#include "Simulator.h"
+#include "EmergencyRoom.h"
+#include "Discharge.h"
+
+class Doctor : public Caregiver
+{
 private:
     //Range of doctor service times
     int min_doctor_treatment_time = 1;
     int max_doctor_treatment_time = 20;
     
 public:
-    doctor(int num_doctors): min_doctor_treatment_time(1), max_doctor_treatment_time(20) {}
+    Doctor(): min_doctor_treatment_time(1), max_doctor_treatment_time(20) {}
     
     //Loop to move a Patient from the EmergencyRoom queue to the Discharge queue if they are done being treated by a doctor
     //If the Patient moves to Discharge, this loop takes a Patient from the WaitingRoom queue and adds it to the EmergencyRoom queue
     void update(int clock)
     {
         // Executes if the EmergencyRoom is not empty
-        if (!doctor_queue.empty()) {
-                
-            //Identifies Patient object at the front of the WaitingRoom priority queue
-            Patient *patient = doctor_queue.front();
-                
+        if (!treatment_queue.empty()) {
+            
+            //Identifies Patient object at the front of the Doctor Treatment queue
+            Patient *patient = doctor_treatment_queue.front();
+            
             //Checks if full treatment time has elapsed
             //If so, moves Patient from the EmergencyRoom queue to the Discharge queue
             if ((clock - patient->start_treatment_time) > patient->treatment_time) {
                     
                 //Removes Patient from the EmergencyRoom queue
-                doctor_queue.pop();
+                doctor_treatment_queue.pop();
                     
                 //Adds the Patient to the Discharge queue
-                discharge_queue->the_queue.push(patient);
+                discharge_queue->priority_two_queue.push(patient);
             }
         }
-            
-        //FACTOR IN HOW TO DIFFERENTIATE BETWEEN A DOCTOR AND A NURSE
+        
         //Executes if a doctor is available to treat a Patient
-        if (doctor_queue.empty()) {
+        if (doctor_treatment_queue.empty()) {
                 
             //Move a Patient from the WaitingRoom queue to the EmergencyRoom queue if the WaitingRoom is not empty
-            if(!waiting_room_queue->the_queue.empty()){
+            if(!priority_two_queue.empty()){
                 //Create a new Patient object pointing to the first Patient in the WaitingRoom queue
-                Patient *patient = waiting_room_queue->the_queue.front();
+                Patient *patient = doctor_treatment_queue->the_queue.front();
                 //Remove first Patient object from WaitingRoom queue
-                waiting_room_queue->the_queue.pop();
+                doctor_queue->the_queue.pop();
                 
                 //Update the start_treatment_time attribute for the Patient
                 int t_time = clock;
@@ -72,12 +76,12 @@ public:
         }
     }
     
-    void setCareTime(int ct){
+    /*void setCareTime(int ct){
         care_time = ct;
     }
     int getCareTime(){
         return care_time;
-    }
+    }*/
 };
 
 #endif /* Doctor_h */

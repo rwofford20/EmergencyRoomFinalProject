@@ -12,10 +12,8 @@
 #include <queue>
 #include <list>
 #include "Patient.h"
-#include "WaitingRoom.h"
 #include "Discharge.h"
 #include "Random.h"
-#include "Simulator.h"
 
 //Accesses global variable from Simulator.h
 extern Random my_random;
@@ -29,24 +27,23 @@ protected:
     //Number of nurses from user's input
     int num_nurses;
     
-    //Pointer to WaitingRoom queue
-    WaitingRoom *waiting_room_queue;
-    //Pointer to EmergencyRoom queue
-    EmergencyRoom *emergency_room_queue;
+    std::priority_queue<Patient*> treatment_queue;
+    
     //Pointer to Discharge queue
-    Discharge *discharge_queue;
+    Discharge *patient_discharge_queue;
+    WaitingRoom *patient_priority_queue;
+    
     
 public:
     EmergencyRoom() {}
     
-    //Set the WaitingRoom queue
-    void set_waiting_room_queue(WaitingRoom *waiting_room_queue) {
-        this->waiting_room_queue = waiting_room_queue;
+    //Set the discharge queue
+    void set_patient_priority_queue(WaitingRoom *patient_priority_queue){
+        this->patient_priority_queue = patient_priority_queue;
     }
     
-    //Set the discharge queue
-    void set_discharge_queue(Discharge *discharge_queue) {
-        this->discharge_queue = discharge_queue;
+    void set_patient_discharge_queue(Discharge *patient_discharge_queue) {
+        this->patient_discharge_queue = patient_discharge_queue;
     }
     
     //Set the number of doctors
@@ -58,10 +55,9 @@ public:
     void set_num_nurses(int num_nurses){
         this->num_nurses = num_nurses;
     }
-    
-    //Polymorphic function called in Nurse.h or Doctor.h
-    virtual void update() = 0;
+ 
 
+    friend class Discharge; 
 };
 
 #endif /* EmergencyRoom_h */

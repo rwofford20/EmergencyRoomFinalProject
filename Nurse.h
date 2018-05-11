@@ -9,7 +9,12 @@
 #ifndef Nurse_h
 #define Nurse_h
 
-class Nurse{
+#include "Simulator.h"
+#include "EmergencyRoom.h"
+#include "Discharge.h"
+
+class Nurse : public Caregiver
+{
 private:
     //Range of nurse service times
     int min_nurse_treatment_time = 1;
@@ -17,7 +22,7 @@ private:
     
 public:
     
-    nurse(int num_nurses): min_nurse_treatment_time(1), max_nurse_treatment_time(10); 
+    Nurse(): min_nurse_treatment_time(1), max_nurse_treatment_time(10) {};
     
     //Loop to move a Patient from the EmergencyRoom queue to the Discharge queue if they are done being treated by a nurse
     //If the Patient moves to Discharge, this loop takes a Patient from the WaitingRoom queue that can be treated by a nurse and adds it to the EmergencyRoom queue
@@ -45,15 +50,15 @@ public:
         if (nurse_queue.empty()) {
             
             //Move a Patient from the WaitingRoom queue to the EmergencyRoom queue if the WaitingRoom is not empty
-            if(!waiting_room_queue->the_queue.empty()){
+            if(!nurse_queue->the_queue.empty()){
                 //Create a new Patient object pointing to the first Patient in the WaitingRoom queue
-                Patient *patient = waiting_room_queue->the_queue.front();
+                Patient *patient = nurse_queue->the_queue.front();
                 
                 //If the Patient's priority number is less than 10, they can be treated by a nurse
                 if (patient->priority <= 10)
                 {
                     //Remove first Patient object from WaitingRoom queue
-                    waiting_room_queue->the_queue.pop();
+                    nurse_queue->the_queue.pop();
                 }
                 else
                 {

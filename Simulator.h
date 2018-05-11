@@ -35,18 +35,15 @@ private:
     int num_doctors;
     int num_nurses;
     
-    //Create a WaitingRoom queue
-    WaitingRoom *waiting_room_queue;
-    //Create a vector, nurses, that contains EmergencyRoom objects
-    std::vector<EmergencyRoom *> nurses;
-    //Create a vector, doctors, that contains EmergencyRoom objects
-    std::vector<EmergencyRoom *> doctors;
+    //Create the priority queue of Patients in the WaitingRoom
+    WaitingRoom *patient_priority_queue;
     //Create a Discharge queue
     Discharge *discharge_queue;
-    //Create a Doctor queue
-    Doctor *doctor_queue;
-    //Create a Nurse queue
-    Nurse *nurse_queue;
+
+    //Vector of doctors
+    std::vector<EmergencyRoom*> doctors;
+    //Vector of nurses
+    std::vector<EmergencyRoom*> nurses;
     
     int read_int(const std::string &prompt, int low, int high){
         if (low >= high) // invalid range
@@ -76,8 +73,9 @@ private:
 public:
     Simulator(){
         //Create WaitingRoom and Discharge queues
-        waiting_room_queue = new WaitingRoom();
-        discharge_queue = new Discharge();
+        patient_priority_queue = new WaitingRoom();
+        patient_discharge_queue = new Discharge();
+
     }
     
     void data_entry()
@@ -95,27 +93,55 @@ public:
         
         //Prompt user to input number of doctors and accept input
         num_doctors = read_int("Please enter the number of doctors: ", 1, 500);
-        the_doctor_queue = new doctor_queue(num_doctors);
+        
+        for (int i=0; i < num_doctors; i++){
+            doctors.push_back(new EmergencyRoom());
+        }
+        
         //Prompt user to input number of nurses and accept input
         num_nurses = read_int("Please enter the number of nurses: ", 1, 500);
-        the_nurse_queue = new nurse_doctor(num_nurses);
+        
+        for (int i=0; i < num_nurses; i++){
+            nurses.push_back(new EmergencyRoom());
+        }
+        
+        for (int i=0; i < num_doctors; i++){
+            //set the number of doctors
+            doctors[i].set_num_doctors(num_doctors);
+            
+            //pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue
+            doctors[i]->set_patient_priority_queue(patient_priority_queue);
+            doctors[i]->set_patient_discharge_queue(patient_discharge_queue);
+        }
+        
+        for (int i=0; i < num_nurses; i++){
+            //set the number of doctors
+            nurses[i].set_num_nurses(num_nurses);
+            
+            //pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue
+            nurses[i]->set_patient_priority_queue(patient_priority_queue);
+            nurses[i]->set_patient_discharge_queue(patient_discharge_queue);
+        }
+        
     }
     
     void run_simulation(){
-        
-        the_doctor_queue->set_waiting_room_queue(waiting_room_queue);
-        the_nurse_queue->set_waiting_room_queue(waiting_room_queue);
         
         //Run the simulation
         for (clock = 0; clock < total_time; ++clock){
             //For each clock tick...
             //Update Waiting Room functions
-            waiting_room_queue->update(clock);
-            //Update Doctor and Nurse functions
-            the_doctor_queue->update(clock);
-            the_nurse_queue->update(clock);
+            patient_priority_queue->update(clock);
+            //Loop through each doctor and use the update function
+            for (int i=0; i < num_doctors; i++){
+                doctors[i]->update(clock);
+            }
+            //Loop through each nurse and use the update function
+            for (int i=0; i < num_nurses; i++){
+                nurses[i]->update(clock);
+            }
             //Update Discharge functions
-            discharge_queue->update(clock);
+            patient_discharge_queue->update(clock);
         }
     }
     

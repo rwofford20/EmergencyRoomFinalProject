@@ -9,12 +9,15 @@
 #ifndef Caregiver_h
 #define Caregiver_h
 
+#include "EmergencyRoom.h"
+
 class Caregiver{
-private:
-    int care_time;
 public:
-    virtual void setCareTime(int ct) = 0;
-    virtual int getCareTime() = 0;
+    
+    //Polymorphic function used in Nurse.h and Doctor.h
+    virtual void update() = 0;
+    
+    friend class EmergencyRoom;
 };
 
 #endif /* Caregiver_h */

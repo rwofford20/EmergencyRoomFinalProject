@@ -9,13 +9,26 @@
 #ifndef Caregiver_h
 #define Caregiver_h
 
-#include "EmergencyRoom.h"
+class EmergencyRoom;
 
 class Caregiver{
+protected:
+    int min_treatment_time;
+    int max_treatment_time;
+    EmergencyRoom *emergency_room;
 public:
+    
+    Caregiver(EmergencyRoom *emergency_room) {
+        emergency_room = emergency_room;
+    };
     
     //Polymorphic function used in Nurse.h and Doctor.h
     virtual void update() = 0;
+    virtual void set_care_time() = 0;
+    virtual int get_care_time() = 0;
+    virtual void set_treatment_time() = 0;
+    virtual double get_treatment_time() = 0;
+    
     
     friend class EmergencyRoom;
 };

@@ -15,14 +15,24 @@
 
 class Nurse : public Caregiver
 {
-private:
+protected:
     //Range of nurse service times
     int min_nurse_treatment_time = 1;
     int max_nurse_treatment_time = 10;
+    itn care_time; 
+    EmergencyRoom *emergency_room;
     
 public:
     
-    Nurse(): min_nurse_treatment_time(1), max_nurse_treatment_time(10) {};
+    Nurse(EmergencyRoom *emergency_room): Caregiver(emergency_room){}
+    
+    void set_care_time(){
+        care_time = my_random.next_int(9);
+    }
+    
+    void get_care_time(){
+        return care_time;
+    }
     
     //Loop to move a Patient from the EmergencyRoom queue to the Discharge queue if they are done being treated by a nurse
     //If the Patient moves to Discharge, this loop takes a Patient from the WaitingRoom queue that can be treated by a nurse and adds it to the EmergencyRoom queue

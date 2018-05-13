@@ -30,7 +30,6 @@ private:
     //Queue of patients in the WaitingRoom
     std::priority_queue<Patient*> patient_priority_queue;
     //std::multiset<Patient> Records;
-    //std::vector<std::string> PatientNames;
     
 public:
     WaitingRoom() {}
@@ -40,18 +39,6 @@ public:
         //set_patient_names();
     }
     
-    //Set the PatientNames from the CS273Ville Resident and Surname files
-    void set_patient_names(){
-        //GET FILES
-        
-    }
-    
-    //Return the name of the given Patient from the PatientNames vector
-    /*std::string getPatientName(int i)
-    {
-        return PatientNames[i];
-    }*/
-    
     //Get the Hospital Records associated with this Patient
     /*std::multiset<Patient> &get_records(){
         return this->Records;
@@ -60,7 +47,12 @@ public:
     
     void update(int clock)
     {
-        //std::string patient_name = getPatientName(my_random.next_int(PatientNames.size()-1));
+        //Patient pointer object
+        Patient *p1 = NULL;
+        
+        //Retrieve patient name
+        std::string patient_name = p1->getName();
+        
         //Add a new Patient to the WaitingRoom based on arrival_rate
         //Generate a random double
         //If random double is less than or equal to the patient arrival rate, create a new patient
@@ -84,8 +76,11 @@ public:
                 patient_priority_level = my_random.next_int(4) +15;
             }
             
-            patient_priority_queue.push(new Patient(clock, patient_priority_level, name));
+            //create new patient object
+            patient_priority_queue.push(new Patient(clock, patient_priority_level, patient_name));
             
+            //Delete patient pointer obejct
+            delete [] p1;
         }
     }
     

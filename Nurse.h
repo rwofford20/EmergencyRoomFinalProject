@@ -19,7 +19,7 @@ protected:
     //Range of nurse service times
     int min_nurse_treatment_time = 1;
     int max_nurse_treatment_time = 10;
-    itn care_time; 
+    int care_time;
     EmergencyRoom *emergency_room;
     
 public:

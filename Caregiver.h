@@ -26,6 +26,7 @@ public:
     virtual void update() = 0;
     virtual void set_care_time() = 0;
     virtual int get_care_time() = 0;
+    virtual int get_clearance_level() = 0; 
     virtual void set_treatment_time() = 0;
     virtual double get_treatment_time() = 0;
     

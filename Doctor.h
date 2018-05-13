@@ -19,6 +19,7 @@ protected:
     //Range of doctor service times
     int min_doctor_treatment_time = 1;
     int max_doctor_treatment_time = 20;
+    const int clearance_level = 20;
     int care_time;
     EmergencyRoom *emergency_room;
     
@@ -26,11 +27,15 @@ public:
     Doctor(EmergencyRoom *emergency_room): Caregiver(emergency_room) {}
     
     void set_care_time(){
-        care_time = my_random.next_int(19);
+        care_time = (my_random.next_int(19) + 1);
     }
     
-    void get_care_time(){
+    int get_care_time(){
         return care_time;
+    }
+    
+    int get_clearance_level(){
+        return 20;
     }
     
     

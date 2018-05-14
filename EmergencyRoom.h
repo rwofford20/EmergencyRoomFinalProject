@@ -16,12 +16,17 @@
 #include "Discharge.h"
 #include "Caregiver.h"
 #include "Random.h"
+#include "Simulator.h"
+
+class Simulator;
+
+using std::queue;
 
 //Accesses global variable from Simulator.h
 extern Random my_random;
 
 //Queue of Patients organized by priority number
-std::queue<Patient*> treatment_queue;
+std::queue<Patient*>treatment_queue;
 
 //Takes Patient from WaitingRoom queue and adds it to EmergencyRoom queue
 //Patient moves to the Disharge queue once they are done being treated in the Emergency Room
@@ -31,6 +36,8 @@ protected:
     int num_doctors;
     //Number of nurses from user's input
     int num_nurses;
+    
+    Simulator *s = NULL; 
 
     Caregiver *caregivers;
     
@@ -42,7 +49,9 @@ protected:
     
     
 public:
-    EmergencyRoom() {}
+    EmergencyRoom(Simulator *s1) {
+        s = s1;
+    }
     
     //Set the discharge queue
     void set_wr_patient_priority_queue(WaitingRoom *patient_priority_queue){
@@ -98,6 +107,26 @@ public:
                 //If the caregiver has the proper clearance to see a patient
                 Caregiver *c1 = NULL;
                 
+                //Loop through the Caregivers to see who is available
+                std::vector <Caregiver*> unavailable_caregivers;
+                std::vector <Caregiver*> available_caregivers;
+                s->get_Caregiver_Vector();
+                
+                for (int i=0; i < caregivers.size(); i++)
+                {
+                    *c1 = caregivers[i];
+                    if (caregivers[i] == NULL){
+                        available_caregivers.push_back(c1);
+                    }
+                    else
+                    {
+                        unavailable_caregivers.push_back(c1);
+                    }
+                }
+                
+                //Once an available Caregiver is found, assign them to a Patient
+                
+                
                 //Stack of patients that cannot be treated
                 std::stack<Patient*> patient_stack;
                 
@@ -142,12 +171,6 @@ public:
 
             }
         }
-    }
-    
-    //Function to update the treatment and discharge queues
-    void update_caregivers(int clock){
-        add_patient_to_discharge(clock);
-        add_patient_to_treatment_queue(clock);
     }
 
     friend class Discharge;

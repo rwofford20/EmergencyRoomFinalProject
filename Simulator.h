@@ -40,10 +40,10 @@ private:
     //Create a Discharge queue
     Discharge *discharge_queue;
     
-    //Vector of doctors
-    std::vector<EmergencyRoom*> caregivers;
+    EmergencyRoom *e1 = NULL;
     
-    
+    //Vector of caregivers
+    std::vector<Caregiver*> caregivers;
     
     int read_int(const std::string &prompt, int low, int high) {
         if (low >= high) // invalid range
@@ -76,9 +76,13 @@ public:
         
         //Create WaitingRoom and Discharge queues
         patient_priority_queue = new WaitingRoom();
-        
+        e1 = new EmergencyRoom(this);
         discharge_queue = new Discharge();
         
+    }
+    
+    std::vector<Caregiver*> get_Caregiver_Vector(){
+        return caregivers;
     }
     
     void data_entry()
@@ -99,26 +103,27 @@ public:
         num_doctors = read_int("Please enter the number of doctors: ", 1, 500);
         
         for (int i = 0; i < num_doctors; i++) {
-            caregivers.push_back(new Doctor());
-            caregivers[i].set_num_doctors(num_doctors);
+            caregivers.push_back(new Doctor(e1));
         }
         
         //Prompt user to input number of nurses and accept input
         num_nurses = read_int("Please enter the number of nurses: ", 1, 500);
         
         for (int i = 0; i < num_nurses; i++) {
-            caregivers.push_back(new Nurse());
-            caregivers[i].set_num_nurses(num_nurses);
+            caregivers.push_back(new Nurse(e1));
         }
         
-        for (int i=0; i < (num_nurses + num_doctors); i++){
-            caregivers.push_back(new EmergencyRoom());
-            
-            //pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue
-            caregivers[i]->set_patient_priority_queue(patient_priority_queue);
-            caregivers[i]->set_patient_discharge_queue(patient_discharge_queue);
-        }
+        //pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue
+        e1->set_num_doctors(num_doctors);
+        e1->set_num_nurses(num_nurses);
+        e1->set_wr_patient_priority_queue(patient_priority_queue);
+        e1->set_patient_discharge_queue(discharge_queue);
         
+    }
+    //Function to update the treatment and discharge queues
+    void update_caregivers(int clock){
+        e1->add_patient_to_treatment_queue(clock);
+        e1->add_patient_to_discharge(clock);
     }
 
     void run_simulation() {
@@ -129,13 +134,10 @@ public:
             patient_priority_queue->update(clock);
 
             //Loop through each doctor and use the update function
-            for (int i = 0; i < (num_doctors+num_nurses); i++) {
-                caregivers[i]->update_caregivers(clock);
-            }
-
-            
+            update_caregivers(clock);
+                
             //Update Discharge functions
-            patient_discharge_queue->update(clock);
+            discharge_queue->update(clock);
         }
     }
     
@@ -143,7 +145,11 @@ public:
     {
         //Output information to the user
         //CALCULATE AVERAGE WAIT TIME
-        std::cout << "Average wait time for patients in the Emergency Room: " << discharge_queue->get_num_served() << std::endl;
+        int total_patients = discharge_queue->get_num_served();
+        int wait_time = discharge_queue->get_total_wait();
+        int total_visit_time = (total_patients / wait_time);
+        
+        std::cout << "Average wait time for patients in the Emergency Room: " << total_visit_time << std::endl;
         
         //OUTPUT MENU
         std::cout << "Menu" << std::endl;

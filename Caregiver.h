@@ -9,6 +9,8 @@
 #ifndef Caregiver_h
 #define Caregiver_h
 
+#include "EmergencyRoom.h"
+
 class EmergencyRoom;
 
 class Caregiver{
@@ -26,9 +28,10 @@ public:
     //Polymorphic function to return the amount of time it will take a Caregiver to treat a Patient
     virtual int get_care_time() = 0;
     //Polymorphic function to return the maximum priority level a Caregiver can treat
-    virtual int get_clearance_level() = 0; 
+    virtual int get_clearance_level() = 0;
     
     friend class EmergencyRoom;
 };
+
 
 #endif /* Caregiver_h */

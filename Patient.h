@@ -66,7 +66,7 @@ bool operator<(const Patient& first, const Patient& second)
 }
 
 //Random Name Generator
-std::string getRandomName(std::string namE)
+std::string getRandomName(std::string name)
 {
     std::string line;
     //First Names
@@ -152,6 +152,5 @@ std::string getRandomName(std::string namE)
         
         return final_name;
     }
-    
-}
+
 #endif /* Patient_h */

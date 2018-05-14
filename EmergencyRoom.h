@@ -144,6 +144,7 @@ public:
         }
     }
     
+    //Function to update the treatment and discharge queues
     void update_caregivers(int clock){
         add_patient_to_discharge(clock);
         add_patient_to_treatment_queue(clock);

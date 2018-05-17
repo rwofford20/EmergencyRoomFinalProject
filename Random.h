@@ -1,9 +1,10 @@
+#pragma once
 //
 //  Random.h
 //  EmergencyRoom
 //
 //  Created by Rachel Wofford on 5/4/18.
-//  Copyright © 2018 Rachel Wofford. All rights reserved.
+//  Copyright � 2018 Rachel Wofford. All rights reserved.
 //
 
 #ifndef Random_h
@@ -13,28 +14,28 @@
 #include <ctime>
 
 //Random number generator
-class Random{
+class Random {
 public:
     //Use time as seed to initialize random number generator
-    Random(){
+    Random() {
         srand((unsigned int)std::time(0));
     }
     
     //Pass a value in to initialize random number generator
-    Random(int seed){
+    Random(int seed) {
         srand(seed);
     }
     
     //Return a random integer in the range of 1 - n+1
-    int next_int(int n){
+    int next_int(int n) {
         return int((next_double() *n) + 1);
     }
     
     //Return a random double in the rand of 0-1
-    double next_double(){
+    double next_double() {
         return double(rand()) / RAND_MAX;
     }
-
+    
 };
 
 #endif /* Random_h */

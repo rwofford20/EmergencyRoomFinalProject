@@ -1,19 +1,20 @@
-//
 //  Patient.h
 //  EmergencyRoom
 //
 //  Created by Rachel Wofford on 5/4/18.
-//  Copyright © 2018 Rachel Wofford. All rights reserved.
-//
+//  Copyright � 2018 Rachel Wofford. All rights reserved.
 
 #ifndef Patient_h
 #define Patient_h
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <algorithm>
 #include <iterator>
 #include <set>
+#include <string>
+#include <vector>
 
 class Caregiver;
 
@@ -21,7 +22,7 @@ std::string getRandomName(std::string);
 
 struct Patient
 {
-    Patient(int clock, int priority_level, std::string name) : priority_level(-1), name(""), patient_visits(-1), arrival_time(clock), start_treatment_time(-1), treatment_time(-1) {}
+    Patient(int clock, int priority_level, std::string p_name) : priority_level(priority_level), name(p_name), patient_visits(-1), arrival_time(clock), start_treatment_time(-1), treatment_time(-1) {}
     
     Patient(std::string n)
     {
@@ -34,32 +35,53 @@ struct Patient
     int arrival_time;
     int start_treatment_time;
     int treatment_time;
-    Caregiver *cg = NULL; 
+    Caregiver *cg = NULL;
     
-    //set function for getting random name
+    //Vector of patient names that have been treated
+    std::vector<std::string> treated_patient_names;
     
-    void setName(std::string final_name)
-    {
-        name = getRandomName(final_name);
-    }
-    
+    //set and get function for random name retrevial
+    void setName() { name = getRandomName(); }
     std::string getName() const { return name; }
-
+    void set_treatment_time(int t) {treatment_time = t;}
+    void set_caregiver(Caregiver *c_giver) { cg = c_giver; }
+    void set_start_treatment_time(int t) {start_treatment_time = t;}
+    int get_start_treatment_time(){return start_treatment_time;}
+    void set_patient_visits(){patient_visits++;}
+    int get_patient_visits(){return patient_visits;}
+    int get_arrival_time(){return arrival_time;}
+    
+    //Accessing vector of treated patients => set in getRandomName.
+    std::vector<std::string> getTreatedNames() { return treated_patient_names; }
+    
+    //Provide set up for priority queue
     double getPriority() const { return priority_level; }
     
-    std::multiset<int> patient_record;
-        
-        
+    //Allow access to individual patient records
+    std::multiset<Patient> patient_record;
+    
+    void set_patient_record(Patient *p1){
+        patient_record.insert(*p1);
+    }
+    
+    std::multiset<Patient> getPatientRecord() {return patient_record;}
+    
     //Random Name Generator
-    std::string getRandomName(std::string name)
+    static std::string getRandomName()
+    {
+        static std::vector<std::string> Full_names;
+        std::string final_name;
+        
+        while (Full_names.size() == 0)
         {
             std::string line;
+            
             //First Names
             std::vector<std::string> fnames; //Vector of first names
             std::fstream FirstNames; //File of First names
             
             //Open text file of first names
-            FirstNames.open("C:\\Users\\jbone\\OneDrive\\Desktop\\FirstNames.txt");
+            FirstNames.open("/Users/rachelwofford/Desktop/residents_of_273ville.txt");
             
             if (FirstNames.fail())
             {
@@ -82,11 +104,12 @@ struct Patient
             std::fstream LastNames; //File of last names
             
             //Open the last name text file
-            LastNames.open("C:\\Users\\jbone\\OneDrive\\Desktop\\LastNames.txt");
+            LastNames.open("/Users/rachelwofford/Desktop/surnames_of_273ville.txt");
             
             if (LastNames.fail())
             {
                 std::cout << "Cannot open first name file" << std::endl;
+                //throw invalid_argument
             }
             
             //Store the first names in the vector names
@@ -99,18 +122,19 @@ struct Patient
                     {
                         lnames.push_back(line);
                     }
-                    
-                    LastNames.close();
+                    LastNames.clear();
+                    LastNames.seekg(0, std::ios::beg);
                 }
+                LastNames.close();
             }
             
             //Vector of full names
-            std::vector<std::string> Full_names;
-            std::vector<std::string> treated_patient_names;
+            
+            
             for (int i = 0; i < lnames.size() - 1; i++)
             {
-                int fnum = std::rand() % 2000 + 1;
-                int lnum = std::rand() % 2000 + 1;
+                int fnum = std::rand() % 1999 + 1;
+                int lnum = std::rand() % 1999 + 1;
                 
                 //Random first name assigned to rand_name
                 std::string rand_fname = fnames.at(fnum);
@@ -122,52 +146,27 @@ struct Patient
                 //Store the full name in the vector
                 Full_names.push_back(fullname);
             }
-            std::string final_name;
+            
             //Output a single name from the random number generator
-            for (int i = 0; i < Full_names.size(); i++)
-            {
-                int fn = rand() % 2000 + 1;
-                final_name = Full_names.at(fn);
-                
-                //Puts the randomly chosen name to the back of the Full_names vector
-                //Full_names.push_back(final_name);
-                
-                bool names_equal = false;
-                //Adds Patient's name to vector of Patients who have been treated
-                for (int j = 0; j < treated_patient_names.size(); j++){
-                    if (treated_patient_names[i] == final_name)
-                    {
-                        names_equal = true;
-                    }
-                }
-                
-                if (names_equal == false)
-                {
-                    treated_patient_names.push_back(final_name);
-                }
-                
-            }
-            return final_name;
         }
-    
-    std::string getTreatedNames() {
-        return 0;
+        
+        int fn = rand() % 1998 + 1;
+        final_name = Full_names.at(fn);
+        
+        return final_name;
     }
-
-
+    
+    bool operator<(const Patient &other) {
+        if (name < other.name)
+            return true;
+        else
+            return false;
+    }
+    
     friend class Simulator;
 };
 
-//Orders the patients priority
-bool operator<(const Patient& first, const Patient& second)
-{
-    if (first.getPriority() < second.getPriority())
-        return true;
-    else if (first.getPriority() > second.getPriority())
-        return true;
-    else
-        return false;
-}
 
+bool operator<(const Patient& first, const Patient& second);
 
 #endif /* Patient_h */

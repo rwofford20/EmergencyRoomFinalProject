@@ -3,7 +3,7 @@
 //  EmergencyRoom
 //
 //  Created by Rachel Wofford on 5/4/18.
-//  Copyright © 2018 Rachel Wofford. All rights reserved.
+//  Copyright � 2018 Rachel Wofford. All rights reserved.
 //
 
 #ifndef Nurse_h
@@ -25,24 +25,25 @@ protected:
     
 public:
     //Constructor for Nurse object
-    Nurse(EmergencyRoom *emergency_room): Caregiver(emergency_room) {}
+    Nurse(EmergencyRoom *emergency_room) : Caregiver(emergency_room) {}
     
     //Function to randomly generate the amount of time it will take Nurse to treat a Patient
     //Min Nurse care time is 1 min, max Nurse care time is 10 min
-    void set_care_time(){
+    void set_care_time() {
         care_time = (my_random.next_int(9) + 1);
     }
     
     //Function to return the amount of time it will take Nurse to treat a Patient
-    int get_care_time(){
+    int get_care_time() {
+        care_time = (my_random.next_int(9) + 1);
         return care_time;
     }
     
     //Returns Nurse's maximum treatable priority level
-    int get_clearance_level(){
+    int get_clearance_level() {
         return clearance_level;
     }
-
+    
 };
 
 #endif /* Nurse_h */

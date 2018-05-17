@@ -52,11 +52,12 @@ void Simulator::data_entry()
     //Prompt user to input number of nurses and accept input
     num_nurses = read_int("Please enter the number of nurses: ", 1, 500);
     
+    //Add a new nurse to the Caregiver vector
     for (int i = 0; i < num_nurses; i++) {
         caregivers.push_back(new Nurse(e1));
     }
     
-    //pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue
+    //Pass references to the priority queue in the WaitingRoom and the discharge queue to the EmergencyRoom queue and also to the number of doctors and nurses in WaitingRoom
     e1->set_num_doctors(num_doctors);
     e1->set_num_nurses(num_nurses);
     e1->set_wr_patient_priority_queue(patient_priority_queue);
@@ -70,6 +71,31 @@ void Simulator::update_caregivers(int clock) {
     e1->add_patient_to_discharge(clock);
 }
 
+//Function that conducts unit testing from "UnitTest.h"
+void Simulator::unit_testing(){
+    UnitTest *u1 = NULL;
+    u1 = new UnitTest();
+    
+    Doctor *d1 = NULL;
+    d1 = new Doctor(e1);
+    //Test to see if Doctor's clearance level is correct
+    u1->testSetDoctorClearance(d1->get_clearance_level());
+    //Test to see if Doctor's care time is correct
+    u1->testDoctorCareTime(d1->get_care_time());
+    
+    
+    Nurse *n1 = NULL;
+    n1 = new Nurse(e1);
+    //Test to see if Nurse's clearance level is correct
+    u1->testSetNurseClearance(n1->get_clearance_level());
+    //Test to see if Nurse's care time is correct
+    u1->testNurseCareTime(n1->get_care_time());
+    
+    std::cout << std::endl;
+    
+}
+
+//Function that runs the simulation
 void Simulator::run_simulation() {
     //Run the simulation
     for (clock = 0; clock < total_time; ++clock)
@@ -87,6 +113,7 @@ void Simulator::run_simulation() {
     }
 }
 
+//Function to display menu
 void Simulator::display_menu()
 {
     //User input for menu option
@@ -114,6 +141,7 @@ void Simulator::display_menu()
     //Ask user to search by name.
     if (ans == 2) { FindPatient(); }
     
+    //Output average wait time
     if (ans == 3) {
         double total_patients = discharge_queue->get_num_served();	//Total number of patients served
         double wait_time = discharge_queue->get_total_wait(); //Total time patients waited
@@ -125,11 +153,14 @@ void Simulator::display_menu()
         std::cout << "Average wait time for patients in the Emergency Room: " << total_visit_time << " minutes " << std::endl;
         std::cout << std::endl;
         
-        display_menu(); 
+        //Display menu to user again
+        std::cout << std::endl;
+        display_menu();
     }
     
 }
 
+//Output list of Patients treated
 void Simulator::ListOfPatients()
 {
     
@@ -140,17 +171,23 @@ void Simulator::ListOfPatients()
     	std::cout << t_patients[i]<< std::endl;
     }
     
+    //Display menu to user again
+    std::cout << std::endl;
     display_menu();
 }
 
+//Output Individual Patients by name to user
 void Simulator::FindPatient()
 {
+    //Multiset containing Patient's records (name, number of visits, priority level)
     std::multiset<Patient> p_records = discharge_queue->get_records();
 
-    
+    //Multiset containing patient names
     std::multiset<std::string> p_names;
+    //Queue of patient priority levels
     std::queue<int> p_priority;
 
+    //Insert patient names into p-names vector
     for (std::multiset<Patient>::iterator it=p_records.begin(); it!=p_records.end(); ++it)
     {
         p_names.insert(it->getName());
@@ -158,23 +195,30 @@ void Simulator::FindPatient()
     
     std::string search_name;
     
+    //Prompt user to input a name
     std::cout << "Please enter a name to search. ";
     std::cin.ignore(); 
     std::getline(std::cin, search_name);
     
+    //Find the number of Patient visits
     double num_visits = p_names.count(std::string(search_name));
     
-    std::cout << search_name << " visited the hospital " << num_visits << " times ";
+    //Output number of Patient visits to user
+    std::cout << search_name << " visited the hospital " << num_visits << " times. ";
     
+    //Need to do: Access patient's priority levels
+    /*
     std::multiset<std::string>::iterator pit = p_names.lower_bound(std::string(search_name));
     for (; pit != p_names.upper_bound(std::string(search_name)); pit++) {
         //Convert the name back into a patient object and then get priority
         std::cout << "with priority levels of: " << std::endl;
-        /*std::multiset<Patient>::iterator p_it = p_records.lower_bound(Patient(search_name));
+        std::multiset<Patient>::iterator p_it = p_records.lower_bound(Patient(search_name));
         for (; p_it != p_records.upper_bound(Patient(search_name)); p_it++) {
             std::cout << p_it->getPriority() << std::endl;
-        }*/
-    }
+        }
+    }*/
     
+    //Display menu to user again
+    std::cout << std::endl;
     display_menu();
 }

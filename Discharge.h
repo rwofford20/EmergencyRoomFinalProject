@@ -39,15 +39,19 @@ public:
         return total_wait_time;
     }
     
+    //Multiset that contains Patient objects
     std::multiset<Patient> get_records(){
         return this->records;
     }
     
+    //Returns vector of treated Patient's names so it can be accessed by other classes
     std::vector<std::string> get_treated_patients()
     {
+        //Vector containing names of treated Patients
         std::vector<std::string> treated_patients_names;
         std::string treated_name;
         
+        //Loop to add Patient's names to vector
         for (int i = 0; i < treated_patients.size(); i++)
         {
             treated_name = treated_patients[i]->getName();
@@ -82,6 +86,7 @@ public:
             //Increment the number of Patients served in this Emergency Room
             num_served++;
             
+            //Add patient to the queue of treated patients
             treated_patients.push_back(patient);
         }
     }

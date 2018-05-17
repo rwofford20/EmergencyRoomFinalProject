@@ -29,7 +29,6 @@ private:
     double arrival_rate;
     //Queue of patients in the WaitingRoom
     std::priority_queue<Patient*> patient_priority_queue;
-    //std::multiset<Patient> records;
     
     
 public:
@@ -37,13 +36,8 @@ public:
     
     void set_arrival_rate(double arrival_rate) {
         this->arrival_rate = arrival_rate;
-        //set_patient_names();
     }
     
-    //Get the Hospital Records associated with this Patient
-    /*std::multiset<Patient> &get_records(){
-     return this->records;
-    }*/
     
     void update(int clock)
     {
@@ -55,11 +49,13 @@ public:
         //If random double is less than or equal to the patient arrival rate, create a new patient
         if (my_random.next_double() < arrival_rate)
         {
-            //Assign Patient a priority level between 0 and 1
+            //Generate a random priority level
             double priority_level = my_random.next_double();
             
             int patient_priority_level;
             
+            //Use above randomly generated priority level to account for different percentages of patients at each priority level
+            //Depending on priority level, assign patient a random priority number
             if (priority_level <= 0.7)
             {
                 patient_priority_level = my_random.next_int(9);
@@ -74,9 +70,8 @@ public:
                 patient_priority_level = my_random.next_int(4) + 15;
             }
             
-            //create new patient object
+            //Create new patient object and add it to patient_priority_queue
             patient_priority_queue.push(new Patient(clock, patient_priority_level, patient_name));
-
         }
     }
     

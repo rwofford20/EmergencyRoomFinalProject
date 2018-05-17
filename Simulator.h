@@ -24,6 +24,7 @@
 #include "Doctor.h"
 #include "Nurse.h"
 #include "Random.h"
+#include "UnitTest.h"
 
 class Patient;
 
@@ -32,9 +33,13 @@ using std::queue;
 class Simulator
 {
 private:
+    //One week long of simulation time
     const int total_time = 10080;
+    //Clockk to keep track of time
     int clock;
+    //Number of doctors
     int num_doctors;
+    //Number of nurses
     int num_nurses;
     
     WaitingRoom *patient_priority_queue; //Create the priority queue of Patients in the WaitingRoom
@@ -44,9 +49,11 @@ private:
     
     std::vector<Caregiver*> caregivers; //Vector of caregivers
     
+    //Determines if user input is valid
     int read_int(const std::string &prompt, int low, int high)
     {
-        if (low >= high) // invalid range
+        //Executes if number is in an invalid range
+        if (low >= high)
             throw std::invalid_argument("invalid range specified");
         
         std::cin.exceptions(std::ios_base::failbit);
@@ -57,7 +64,8 @@ private:
                 while (true) {
                     std::cout << prompt;
                     std::cin >> num;
-                    if (num >= low && num <= high) { // within the specified range
+                    //Executes if number is within the specified range
+                    if (num >= low && num <= high) {
                         std::cout << std::endl;
                         return num;
                     }
@@ -74,9 +82,11 @@ private:
 public:
     Simulator();
     
+    //Vector of Caregiver objects
     std::vector<Caregiver*> get_Caregiver_Vector() { return caregivers; }
     
     //Functions calls => Simulator.cpp
+    void unit_testing(); 
     void data_entry();
     void update_caregivers(int clock); 
     void run_simulation();

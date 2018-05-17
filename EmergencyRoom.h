@@ -72,10 +72,11 @@ public:
         this->num_nurses = num_nurses;
     }
     
+    //Function to remove treated patients from the EmergencyRoom
     void add_patient_to_discharge(int clock)
     {
         
-        // Executes if the EmergencyRoom is not empty
+        // Check if there is a Ptient in the EmergencyRoom
         if (!treatment_queue.empty()) {
             
             //Identifies Patient object at the front of the Doctor Treatment queue
@@ -91,9 +92,9 @@ public:
                 //Adds the Patient to the Discharge queue
                 patient_discharge_queue->discharge_queue.push(patient);
             }
+            //Sets this patient's Caregiver to be able to treat other patients
             Caregiver *c_giver = NULL;
             c_giver = patient->cg;
-            
             c_giver->set_is_empty();
         }
     }

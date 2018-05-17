@@ -13,6 +13,7 @@ Simulator emergencyroom;
 
 int main() {
     
+    emergencyroom.unit_testing(); 
     emergencyroom.data_entry();
     emergencyroom.run_simulation();
     emergencyroom.display_menu();

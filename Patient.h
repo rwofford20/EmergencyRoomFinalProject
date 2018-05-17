@@ -29,26 +29,41 @@ struct Patient
         name = n;
     }
     
+    //Patient's priority level
     int priority_level;
+    //Patient's name
     std::string name;
+    //Number of times Patient has been to hospital
     int patient_visits;
+    //Patient's arrival time
     int arrival_time;
+    //When Patient began getting treated
     int start_treatment_time;
+    //Hoe long it took Patient to get treated
     int treatment_time;
+    //Patient's Caregiver
     Caregiver *cg = NULL;
     
     //Vector of patient names that have been treated
     std::vector<std::string> treated_patient_names;
     
-    //set and get function for random name retrevial
+    //Mutator function for generating Patient's name
     void setName() { name = getRandomName(); }
+    //Accessor function for returning Patient's name
     std::string getName() const { return name; }
+    //Mutator function for setting treatment time
     void set_treatment_time(int t) {treatment_time = t;}
+    //Assigns a Caregiver to a Patient
     void set_caregiver(Caregiver *c_giver) { cg = c_giver; }
+    //Mutator function for assigning Patient's starting treatment time
     void set_start_treatment_time(int t) {start_treatment_time = t;}
+    //Accessor function for retriving Patient's starting treatment time
     int get_start_treatment_time(){return start_treatment_time;}
+    //Increments number of Patient's visits
     void set_patient_visits(){patient_visits++;}
+    //Returns number of Patient visits
     int get_patient_visits(){return patient_visits;}
+    //Returns Patient's arrival time
     int get_arrival_time(){return arrival_time;}
     
     //Accessing vector of treated patients => set in getRandomName.
@@ -60,10 +75,12 @@ struct Patient
     //Allow access to individual patient records
     std::multiset<Patient> patient_record;
     
+    //Adds patient to patient_record multiset
     void set_patient_record(Patient *p1){
         patient_record.insert(*p1);
     }
     
+    //Returns nultiset of Patient Records
     std::multiset<Patient> getPatientRecord() {return patient_record;}
     
     //Random Name Generator
@@ -153,6 +170,7 @@ struct Patient
         int fn = rand() % 1998 + 1;
         final_name = Full_names.at(fn);
         
+        //Return Patient's Name
         return final_name;
     }
     
